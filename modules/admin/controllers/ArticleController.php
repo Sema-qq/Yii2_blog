@@ -2,10 +2,12 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Category;
 use app\models\ImageUpload;
 use Yii;
 use app\models\Article;
 use app\models\ArticleSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -139,6 +141,29 @@ class ArticleController extends Controller
                 return $this->redirect(['view', 'id' => $id]);
             }
         }
+        //иначе опять покажем форму
         return $this->render('image', compact('model'));
+    }
+
+    public function actionSetCategory($id)
+    {
+        //вытащим статью по id
+        $article = $this->findModel($id);
+        //получим текущее id категории в статье
+        $selectedCategory = $article->category->id;
+        //список названий всех категорий для дропдаунлиста во вьюхе
+        $categories = ArrayHelper::map(Category::find()->all(), 'id','title');
+        //если форма отправлена, то
+        if (Yii::$app->request->isPost){
+            //получим значение выбранной категории
+            $category = Yii::$app->request->post('category');
+            //и сохраним его
+            if ($article->saveCategory($category)){
+                //если сохранение прошло успешно, то редирект во вьюху статьи
+                return $this->redirect(['view', 'id' => $id]);
+            }
+        }
+        //иначе опять покажем форму
+        return $this->render('category', compact('article','selectedCategory', 'categories'));
     }
 }

@@ -90,6 +90,16 @@ class Article extends \yii\db\ActiveRecord
         return !empty($this->image) ? '/uploads'.$this->image : '/no-image.png';
     }
 
+    //сохранение категории для статьи
+    public function saveCategory($category_id)
+    {
+        $category = Category::findOne($category_id);
+        if (!empty($category) && $category != null){
+            $this->link('category', $category);
+            return true;
+        }
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -105,5 +115,10 @@ class Article extends \yii\db\ActiveRecord
     public function getComments()
     {
         return $this->hasMany(Comment::className(), ['article_id' => 'id']);
+    }
+
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 }
