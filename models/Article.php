@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "article".
@@ -87,7 +88,7 @@ class Article extends \yii\db\ActiveRecord
     //вывод картинки
     public function getImage()
     {
-        return !empty($this->image) ? '/uploads'.$this->image : '/no-image.png';
+        return !empty($this->image) ? '/uploads/'.$this->image : '/no-image.png';
     }
 
     //сохранение категории для статьи
@@ -100,25 +101,36 @@ class Article extends \yii\db\ActiveRecord
         }
     }
 
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getArticleTags()
+    public function getSelectedTags()
     {
-        return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
+        $selectedTags = $this->getTags()->select('id')->asArray()->all();
+        return ArrayHelper::getColumn($selectedTags, 'id');
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
+    public function saveTags($tags)
     {
-        return $this->hasMany(Comment::className(), ['article_id' => 'id']);
+        //по хорошему здесь нужно сделать совсем иначе:
+        //проверять уже существующие связи и добавлять новые,
+        //если их нет, иа старые удалять, если они не пришли в массиве,
+        //а не пересоздавать каждый раз, но в рамках данного проекта
+        //подойдет и такое
+
+        if(is_array($tags)){
+            ArticleTag::deleteAll(['article_id' => $this->id]);
+            foreach ($tags as $tag_id) {
+                $tag = Tag::findOne($tag_id);
+                $this->link('tags', $tag);
+            }
+        }
     }
 
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    public function getTags()
+    {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('article_tag', ['article_id' => 'id']);
     }
 }

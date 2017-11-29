@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\models\Category;
 use app\models\ImageUpload;
+use app\models\Tag;
 use Yii;
 use app\models\Article;
 use app\models\ArticleSearch;
@@ -165,5 +166,24 @@ class ArticleController extends Controller
         }
         //иначе опять покажем форму
         return $this->render('category', compact('article','selectedCategory', 'categories'));
+    }
+
+    public function actionSetTag($id)
+    {
+        //вытащим статью по id
+        $article = $this->findModel($id);
+        //все теги статьи
+        $selectedTags = $article->getSelectedTags();
+        //все теги
+        $tags = ArrayHelper::map(Tag::find()->all(), 'id', 'title');
+        //если форма отправлена, то получим выбранные теги с формы и
+        if(Yii::$app->request->isPost){
+            $tags = Yii::$app->request->post('tags');
+            //сохраним, в случае успешного сохранения редирект на страницу статьи
+            $article->saveTags($tags);
+            return $this->redirect(['view', 'id' => $id]);
+
+        }//иначе опять покажем форму
+        return $this->render('tags', compact('article', 'selectedTags','tags'));
     }
 }
