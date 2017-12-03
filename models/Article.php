@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -122,6 +123,43 @@ class Article extends \yii\db\ActiveRecord
                 $this->link('tags', $tag);
             }
         }
+    }
+    //форматируем дату для вьюхи
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+    //пагинация для главной
+    public static function getAll($page_size = 5)
+    {
+        //вытащили все статьи
+        $query = Article::find();
+        //получили их количество
+        $count = $query->count();
+        //создали объект пагинации, в конструктор положили количество статей
+        // и количество на одной странице
+        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => $page_size]);
+        //статьи с пагинацией уже
+        $articles = $query->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        //кладем всё в массив для передачи в контроллер
+        $data = [
+            'articles' => $articles,
+            'pagination' => $pagination
+        ];
+
+        return $data;
+    }
+    //популярные статьи для сайдбара
+    public static function getPopular($limit = 3)
+    {
+        return Article::find()->orderBy('viewed desc')->limit($limit)->all();
+    }
+    //последние посты для сайдюара
+    public static function getRecent($limit = 4)
+    {
+        return Article::find()->orderBy('date asc')->limit($limit)->all();
     }
 
     public function getCategory()

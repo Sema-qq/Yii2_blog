@@ -2,7 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Article;
+use app\models\Category;
 use Yii;
+use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -61,7 +64,57 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        //статьи с пагинацией
+        $data = Article::getAll();
+        //популярныые статьи
+        $popular = Article::getPopular();
+        //последние посты
+        $recent = Article::getRecent();
+        //категории
+        $categories = Category::find()->all();
+
+        return $this->render('index', [
+            'articles' => $data['articles'],
+            'pagination' => $data['pagination'],
+            'popular' => $popular,
+            'recent' => $recent,
+            'categories' => $categories
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        //статья
+        $article = Article::findOne($id);
+        //популярныые статьи
+        $popular = Article::getPopular();
+        //последние посты
+        $recent = Article::getRecent();
+        //категории
+        $categories = Category::find()->all();
+        return $this->render('single', compact('article', 'popular', 'recent', 'categories'));
+    }
+
+    public function actionCategory($id)
+    {
+        //статьи текущей категории с пагинацией
+        $data = Category::getArticlesByCategory($id);
+        //текущая категория
+        $category = Category::findOne($id);
+        //популярныые статьи
+        $popular = Article::getPopular();
+        //последние посты
+        $recent = Article::getRecent();
+        //категории
+        $categories = Category::find()->all();
+        return $this->render('category', [
+            'category' => $category,
+            'popular' => $popular,
+            'recent' => $recent,
+            'categories' => $categories,
+            'articles' => $data['articles'],
+            'pagination' => $data['pagination']
+            ]);
     }
 
     /**
