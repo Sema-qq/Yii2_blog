@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use app\models\Article;
 use app\models\Category;
+use app\models\CommentForm;
 use Yii;
-use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -58,8 +58,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
@@ -82,6 +80,10 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     */
     public function actionView($id)
     {
         //статья
@@ -92,9 +94,19 @@ class SiteController extends Controller
         $recent = Article::getRecent();
         //категории
         $categories = Category::find()->all();
-        return $this->render('single', compact('article', 'popular', 'recent', 'categories'));
+        //комментарии
+        $comments = $article->comments;
+        //форма для сохранения комментариев
+        $commentForm = new CommentForm();
+        return $this->render('single', compact(
+            'article', 'popular', 'recent', 'categories', 'comments', 'commentForm')
+        );
     }
 
+    /**
+     * @param $id
+     * @return string
+     */
     public function actionCategory($id)
     {
         //статьи текущей категории с пагинацией
@@ -118,41 +130,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
+     * @return string|Response
      */
     public function actionContact()
     {
@@ -168,8 +146,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
-     *
      * @return string
      */
     public function actionAbout()

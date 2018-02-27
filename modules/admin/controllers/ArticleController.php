@@ -70,7 +70,7 @@ class ArticleController extends Controller
     {
         $model = new Article();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->saveArticle()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -88,7 +88,7 @@ class ArticleController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->saveArticle()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -126,6 +126,11 @@ class ArticleController extends Controller
         }
     }
 
+    /**
+     * Загрузка картинки
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionSetImage($id)
     {
         $model = new ImageUpload();
@@ -146,6 +151,11 @@ class ArticleController extends Controller
         return $this->render('image', compact('model'));
     }
 
+    /**
+     * Выбор категории
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionSetCategory($id)
     {
         //вытащим статью по id
@@ -168,6 +178,11 @@ class ArticleController extends Controller
         return $this->render('category', compact('article','selectedCategory', 'categories'));
     }
 
+    /**
+     * Выбор тегов
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionSetTag($id)
     {
         //вытащим статью по id

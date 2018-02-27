@@ -7,16 +7,16 @@ use yii\base\Model;
 use yii\web\UploadedFile;
 
 /**
- * Created by PhpStorm.
- * User: Кирилл
- * Date: 27.11.2017
- * Time: 21:36
+ * Class ImageUpload
+ * @package app\models
  */
-
 class ImageUpload extends Model
 {
     public $image;
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -24,7 +24,13 @@ class ImageUpload extends Model
             [['image'],'file', 'extensions' => 'png,jpg']
         ];
     }
-    //метод загрузки картинки
+
+    /**
+     * Загрузка картинки
+     * @param UploadedFile $file
+     * @param $currentImage
+     * @return string
+     */
     public function uploadFile(UploadedFile $file, $currentImage)
     {
         //кладем объект картинки в наше свойство
@@ -37,24 +43,40 @@ class ImageUpload extends Model
             return $this->saveImage();
         }
     }
-    //возвращаем путь к картинкам
+
+    /**
+     * @return string (путь к картинкам)
+     */
     private function getFolder()
     {
         return Yii::getAlias('@web').'uploads/';
     }
-    //генерируем имя картинки, чтобы не совпало
+
+    /**
+     * Генерация имени картинки
+     * @return string
+     */
     private function generetaFilename()
     {
         return strtolower(md5(uniqid($this->image->baseName)).'.'.$this->image->extension);
     }
-    //удаляем картинку, если она существует
+
+    /**
+     * Удаление текущей картинки, если она существует
+     * @param $currentImage
+     */
     public function deleteCurrentImage($currentImage)
     {
         if ($this->fileExist($currentImage)){
             unlink($this->getFolder().$currentImage);
         }
     }
-    //проверяем файл на существование
+
+    /**
+     * Проверяем файл на существование
+     * @param $currentImage
+     * @return bool
+     */
     private function fileExist($currentImage)
     {
         //на всякий случай дополнительные проверочки не помешают
@@ -62,7 +84,11 @@ class ImageUpload extends Model
             return file_exists($this->getFolder().$currentImage);
         }
     }
-    //сохраняем картинку
+
+    /**
+     * Сохранение картинки
+     * @return string
+     */
     private function saveImage()
     {
         $filename = $this->generetaFilename();

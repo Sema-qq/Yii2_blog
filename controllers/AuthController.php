@@ -3,23 +3,15 @@
 namespace app\controllers;
 
 use app\models\LoginForm;
-use app\models\User;
+use app\models\SignupForm;
 use Yii;
 use yii\web\Controller;
 
-/**
- * Created by PhpStorm.
- * User: Кирилл
- * Date: 03.12.2017
- * Time: 11:23
- */
 
 class AuthController extends Controller
 {
     /**
-     * Login action.
-     *
-     * @return Response|string
+     * @return string|\yii\web\Response
      */
     public function actionLogin()
     {
@@ -31,25 +23,32 @@ class AuthController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
-        return $this->render('/site/login', [
+        return $this->render('login', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Logout action.
-     *
-     * @return Response
+     * @return string
+     */
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+        if (Yii::$app->request->isPost){
+            if ($model->load(Yii::$app->request->post()) && $model->signup()){
+                return $this->redirect('login');
+            }
+        }
+        return $this->render('signup', compact('model'));
+    }
+
+    /**
+     * @return \yii\web\Response
      */
     public function actionLogout()
     {
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    public function actionTest()
-    {
-        //
     }
 }

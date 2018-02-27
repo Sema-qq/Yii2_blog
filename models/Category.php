@@ -42,6 +42,11 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Получение статей по категории
+     * @param $id
+     * @return array
+     */
     public static function getArticlesByCategory($id)
     {
         //вытащили все статьи
@@ -63,6 +68,9 @@ class Category extends \yii\db\ActiveRecord
         return $data;
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getArticles()
     {
         return $this->hasMany(Article::className(), ['category_id' => 'id']);

@@ -62,38 +62,69 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Comment::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * @param int|string $id
+     * @return null|static
+     */
     public static function findIdentity($id)
     {
         return User::findOne($id);
     }
 
+    /** @inheritdoc */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         //
     }
 
+    /** @return int */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAuthKey()
     {
         // TODO: Implement getAuthKey() method.
     }
 
+    /**
+     * @param string $authKey
+     */
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
     }
-    //ищем пользователя по логину
-    public function findByUserName($username)
+
+    /**
+     * Пользователь по логину
+     * @param $username
+     * @return array|null|ActiveRecord
+     */
+    public static function findByUserName($username)
     {
         return User::find()->where(['name' => $username])->one();
     }
-    //проверка пароля
+
+    /**
+     * Проверка пароля
+     * @param $password
+     * @return bool
+     */
     public function validatePassword($password)
     {
         return ($this->password == $password) ? true : false;
+    }
+
+    /**
+     * Возвращает метод сейв, для понимания редактируем мы или создаем нового пользователя
+     * @return bool
+     */
+    public function create()
+    {
+        return $this->save(false); //параметр отменяет валидацию
     }
 }
