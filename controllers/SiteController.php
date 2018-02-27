@@ -63,7 +63,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         //статьи с пагинацией
-        $data = Article::getAll();
+        $data = Article::getAll(1);
         //популярныые статьи
         $popular = Article::getPopular();
         //последние посты

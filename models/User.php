@@ -15,6 +15,7 @@ use yii\web\IdentityInterface;
  * @property string $password
  * @property integer $is_admin
  * @property string $photo
+ * @property integer $vk_id
  *
  * @property Comment[] $comments
  */
@@ -34,7 +35,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['is_admin'], 'integer'],
+            [['is_admin', 'vk_id'], 'integer'],
             [['name', 'email', 'password', 'photo'], 'string', 'max' => 255],
         ];
     }
@@ -126,5 +127,28 @@ class User extends ActiveRecord implements IdentityInterface
     public function create()
     {
         return $this->save(false); //параметр отменяет валидацию
+    }
+
+
+    /**
+     * Регистрация/авторизация через виджет ВК
+     * @param int $uid
+     * @param string $first_name
+     * @param string $photo
+     * @return bool
+     */
+    public function saveFromVk($uid, $first_name, $photo)
+    {
+        //если такой пользователь уже есть, то авторизуем его
+        if($user = User::findOne(['vk_id' => $uid])){
+            return Yii::$app->user->login($user);
+        }
+        //иначе создадим нового и авторизуем его
+        $this->vk_id = $uid;
+        $this->name = $first_name;
+        $this->photo = $photo;
+        $this->create();
+
+        return Yii::$app->user->login($this);
     }
 }
