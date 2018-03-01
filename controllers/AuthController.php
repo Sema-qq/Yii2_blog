@@ -53,6 +53,13 @@ class AuthController extends Controller
         return $this->goHome();
     }
 
+    /**
+     * Авторизация/регистрация через виджет ВК
+     * @param integer $uid
+     * @param string $first_name
+     * @param string $photo
+     * @return \yii\web\Response
+     */
     public function actionLoginVk($uid, $first_name, $photo)
     {
         $user = new User();

@@ -243,4 +243,13 @@ class Article extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Comment::className(), ['article_id' => 'id']);
     }
+
+    /**
+     * Только разрешенные комментарии
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public function getArticleComments()
+    {
+        return $this->getComments()->where(['status' => 1])->all();
+    }
 }

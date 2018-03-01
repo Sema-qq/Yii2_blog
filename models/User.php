@@ -151,4 +151,13 @@ class User extends ActiveRecord implements IdentityInterface
 
         return Yii::$app->user->login($this);
     }
+
+    /**
+     * Фото пользователя
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->photo;
+    }
 }

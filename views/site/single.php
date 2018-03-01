@@ -28,8 +28,9 @@
                         </div>
 
                         <div class="decoration">
-                            <a href="#" class="btn btn-default">Decoration</a>
-                            <a href="#" class="btn btn-default">Decoration</a>
+                            <?php foreach ($article->tags as $tag):?>
+                                <a href="#" class="btn btn-default"><?= $tag->title;?></a>
+                            <?php endforeach;?>
                         </div>
 
                         <div class="social-share">
@@ -37,11 +38,14 @@
                                     class="social-share-title pull-left text-capitalize">By Rubel <?= $article->getDate(); ?>
                             </span>
                             <ul class="text-center pull-right">
-                                <li><a class="s-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a class="s-twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a class="s-google-plus" href="#"><i class="fa fa-google-plus"></i></a></li>
-                                <li><a class="s-linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
-                                <li><a class="s-instagram" href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a class="s-vk" href="#"><i class="fa fa-vk"></i></a></li>
+                                <li><a class=fa-android" href="#"><i class="fa fa-android"></i></a></li>
+                                <li><a class=fa-youtube" href="#"><i class="fa fa-youtube"></i></a></li>
+                                <li><a class=fa-github" href="#"><i class="fa fa-github"></i></a></li>
+                                <li><a class=fa-chrome" href="#"><i class="fa fa-chrome"></i></a></li>
+                                <li><a class=fa-windows" href="#"><i class="fa fa-windows"></i></a></li>
+                                <li><a class=fa-google" href="#"><i class="fa fa-google"></i></a></li>
+                                <li><a class=fa-steam" href="#"><i class="fa fa-steam"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -51,25 +55,15 @@
                 <?php if(!empty($comments)):?>
                     <?php foreach ($comments as $comment):?>
                         <div class="bottom-comment">
-                            <h4>3 comments</h4>
-
                             <div class="comment-img">
-                                <img class="img-circle" src="/public/images/comment-img.jpg" alt="">
+                                <img class="img-circle" src="<?= $comment->user->image; ?>" style="width: 100px">
                             </div>
 
                             <div class="comment-text">
                                 <a href="#" class="replay btn pull-right"> Replay</a>
-                                <h5>Rubel Miah</h5>
-
-                                <p class="comment-date">
-                                    December, 02, 2015 at 5:57 PM
-                                </p>
-
-
-                                <p class="para">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                                    diam nonumy
-                                    eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                                    voluptua. At vero eos et cusam et justo duo dolores et ea rebum.</p>
+                                <h5><?= $comment->user->name; ?></h5>
+                                <p class="comment-date"><?= $comment->getDate(); ?></p>
+                                <p class="para"><?= $comment->text; ?>.</p>
                             </div>
                         </div>
                     <?php endforeach;?>
@@ -77,20 +71,7 @@
                 <!-- end bottom comment-->
 
                 <!--leave comment-->
-                <div class="leave-comment">
-                    <h4>Leave a reply</h4>
-
-
-                    <form class="form-horizontal contact-form" role="form" method="post" action="#">
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <textarea class="form-control" rows="6" name="message"
-                                          placeholder="Write Massage"></textarea>
-                            </div>
-                        </div>
-                        <a href="#" class="btn send-btn">Post Comment</a>
-                    </form>
-                </div>
+                <?= $this->render('/partials/comment', compact('article','comments','commentForm')); ?>
                 <!--end leave comment-->
 
             </div>

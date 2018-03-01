@@ -18,6 +18,12 @@ use Yii;
  */
 class Comment extends \yii\db\ActiveRecord
 {
+    /** Статус разрешен для комментария */
+    const STTATUS_ALLOW = 1;
+
+    /** Статус запрещен для комментария */
+    const STATUS_DISALLOW = 0;
+
     /**
      * @inheritdoc
      */
@@ -67,5 +73,42 @@ class Comment extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+
+    /**
+     * Проверяем статус комментария
+     * @return int
+     */
+    public function isAllowed()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Разрешить к публикации комментарий
+     * @return bool
+     */
+    public function allow()
+    {
+        $this->status = self::STTATUS_ALLOW;
+        return $this->save(false);
+    }
+
+    /**
+     * Запретить к публикации комментарий
+     * @return bool
+     */
+    public function disallow()
+    {
+        $this->status = self::STATUS_DISALLOW;
+        return $this->save(false);
     }
 }

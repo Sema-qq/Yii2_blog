@@ -95,7 +95,7 @@ class SiteController extends Controller
         //категории
         $categories = Category::find()->all();
         //комментарии
-        $comments = $article->comments;
+        $comments = $article->getArticleComments();
         //форма для сохранения комментариев
         $commentForm = new CommentForm();
         return $this->render('single', compact(
@@ -151,5 +151,22 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Сохранение комментариев
+     * @param $id
+     * @return Response
+     */
+    public function actionComment($id)
+    {
+        $model = new CommentForm();
+
+        if (Yii::$app->request->isPost){
+            if ($model->load(Yii::$app->request->post()) && $model->saveComment($id)){
+                Yii::$app->session->setFlash('comment', 'Your comment will be added soon!');
+                return $this->redirect(['site/view', 'id' => $id]);
+            }
+        }
     }
 }
