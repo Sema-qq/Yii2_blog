@@ -98,6 +98,9 @@ class SiteController extends Controller
         $comments = $article->getArticleComments();
         //форма для сохранения комментариев
         $commentForm = new CommentForm();
+
+        //счетчик просмотров
+        $article->viewedCounter();
         return $this->render('single', compact(
             'article', 'popular', 'recent', 'categories', 'comments', 'commentForm')
         );

@@ -34,8 +34,8 @@
                         </div>
 
                         <div class="social-share">
-							<span
-                                    class="social-share-title pull-left text-capitalize">By Rubel <?= $article->getDate(); ?>
+							<span class="social-share-title pull-left text-capitalize">
+                                By <?= $article->author->name; ?> <?= $article->getDate(); ?>
                             </span>
                             <ul class="text-center pull-right">
                                 <li><a class="s-vk" href="#"><i class="fa fa-vk"></i></a></li>
