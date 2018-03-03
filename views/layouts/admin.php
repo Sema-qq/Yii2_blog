@@ -41,7 +41,7 @@ AppAsset::register($this);
             ['label' => 'Admin', 'url' => ['/admin/']],
             ['label' => 'Articles', 'url' => ['/admin/article']],
             ['label' => 'Categories', 'url' => ['/admin/category']],
-            ['label' => 'Commentaries', 'url' => ['/admin/comments']],
+            ['label' => 'Commentaries', 'url' => ['/admin/comment']],
             ['label' => 'Tags', 'url' => ['/admin/tag']],
         ],
     ]);
